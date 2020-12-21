@@ -8,8 +8,19 @@ interface ParamTypes {
   roomCode: string;
   username: string;
 }
+
+interface AnswerButtonProps {
+  answer: string;
+  sendAnswer: (answer: string) => void;
+}
+
+const AnswerButton: React.FC<AnswerButtonProps> = ({ answer, sendAnswer }) => {
+  return <button onClick={() => sendAnswer(answer)}>{answer}</button>;
+};
+
 const Play: React.FC = () => {
   const [gameState, setGameState] = useState<GameState | null>(null);
+  const [answer, setAnswer] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const { roomCode, username } = useParams<ParamTypes>();
   const { goToLanding } = useNavigation();
@@ -27,6 +38,7 @@ const Play: React.FC = () => {
     socket.on("game-state-update", (newGameState: GameState) => {
       console.log(newGameState);
       setGameState(newGameState);
+      setAnswer(null);
     });
 
     socket.on("room-unavailable", () => {
@@ -39,6 +51,17 @@ const Play: React.FC = () => {
   const updateRdy = () => {
     socket.emit("player-ready", !ready);
     setReady(!ready);
+  };
+
+  const renderAnswers = (answers: string[]) => {
+    return answers.map((a, i) => (
+      <AnswerButton key={i} sendAnswer={sendAnswer} answer={a} />
+    ));
+  };
+
+  const sendAnswer = (answer: string) => {
+    setAnswer(answer);
+    socket.emit("player-answer", answer);
   };
 
   if (gameState?.currentState === "WAITING") {
@@ -60,10 +83,12 @@ const Play: React.FC = () => {
   if (gameState?.currentState === "QUESTION" && gameState.currentQuestion) {
     return (
       <>
-        <div>{gameState?.currentQuestion?.question}</div>
-        {gameState.currentQuestion.answers.map((a, i) => (
-          <div key={i}>{a}</div>
-        ))}
+        <div>{!answer && gameState?.currentQuestion?.question}</div>
+        <div>
+          {!answer
+            ? renderAnswers(gameState.currentQuestion.answers)
+            : "Wait for others"}
+        </div>
       </>
     );
   }

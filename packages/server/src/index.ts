@@ -61,7 +61,8 @@ io.on("connection", (socket: SocketWithProps) => {
     socket.playerData = {
       username: player.username,
       ready: false,
-      points: 0,
+      score: 0,
+      answer: null,
     };
     socket.roomCode = player.roomCode;
 
@@ -85,9 +86,9 @@ io.on("connection", (socket: SocketWithProps) => {
 
     if (room && allPlayersRdy === true) {
       console.log(`Game started on room: ${socket.roomCode}`);
-      room.gameState.currentState = "STARTED";
+      room.setState("STARTED");
 
-      io.to(socket.roomCode).emit("game-state-update", room.gameState);
+      io.to(socket.roomCode).emit("game-state-update", room.getGameState());
       await wait(2000);
 
       const rounds = 2;
@@ -95,34 +96,39 @@ io.on("connection", (socket: SocketWithProps) => {
 
       //Main game loop
       while (round < rounds) {
-        room.gameState.answering = room.getGameState().players[0];
         const response = await fetch("http://localhost:4000/questions");
         const question = await response.json();
         room.gameState.currentQuestion = question[0];
-        room.gameState.currentState = "QUESTION";
-        io.to(socket.roomCode).emit("game-state-update", room.gameState);
+        room.setState("QUESTION");
+        io.to(socket.roomCode).emit("game-state-update", room.getGameState());
         await wait(10000);
 
-        room.gameState.currentState = "ANSWER";
-        io.to(socket.roomCode).emit("game-state-update", room.gameState);
+        room.setState("ANSWER");
+        io.to(socket.roomCode).emit("game-state-update", room.getGameState());
         await wait(5000);
 
-        room.gameState.currentState = "SCORE";
-        io.to(socket.roomCode).emit("game-state-update", room.gameState);
+        room.setState("SCORE");
+        console.log(room.gameState.scores);
+        io.to(socket.roomCode).emit("game-state-update", room.getGameState());
         await wait(5000);
 
         round++;
       }
       room.gameState.currentState = "ENDED";
-      io.to(socket.roomCode).emit("game-state-update", room.gameState);
+      io.to(socket.roomCode).emit("game-state-update", room.getGameState());
     }
   });
 
-  function wait(ms: number) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
+  socket.on("player-answer", (answer) => {
+    const room = getRoomByCode(socket.roomCode);
+
+    if (!room) {
+      return;
+    }
+
+    socket.playerData.answer = answer;
+    console.log(socket.playerData.answer);
+  });
 
   socket.on("disconnect", () => {
     if (socket.type === "GAME") {
@@ -139,4 +145,10 @@ io.on("connection", (socket: SocketWithProps) => {
 
 function getRoomByCode(roomCode: string) {
   return rooms.find((r) => r.roomCode === roomCode);
+}
+
+function wait(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }

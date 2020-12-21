@@ -9,16 +9,15 @@ export type CurrentState =
   | "ENDED";
 export type GameState = {
   currentState: CurrentState;
+  answers: PlayerAnswer[];
   players: PlayerData[];
-  answering: PlayerData | null;
-  answer: Answer | null;
-  answers: [];
   currentQuestion: Question | null;
+  scores: PlayerScore[];
 };
 
-export type Answer = {
-  answer: string;
+export type PlayerScore = {
   username: string;
+  score: number;
 };
 
 export type JoiningPlayerData = {
@@ -35,7 +34,8 @@ export interface SocketWithProps extends Socket {
 export interface PlayerData {
   username: string;
   ready: boolean;
-  points: number;
+  score: number;
+  answer: string | null;
 }
 
 export type Question = {
@@ -53,4 +53,9 @@ export type ResponseCreateRoom = {
 
 export type ResponsePlayers = {
   players: PlayerData[];
+};
+
+export type PlayerAnswer = {
+  answer: string | null;
+  username: string;
 };

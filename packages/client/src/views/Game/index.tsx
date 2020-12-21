@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   GameState,
   PlayerData,
+  PlayerScore,
   ResponseCreateRoom,
   ResponsePlayers,
 } from "../../../../server/src/types";
@@ -10,10 +11,9 @@ import io from "socket.io-client";
 const initialGameState: GameState = {
   players: [],
   currentState: "WAITING",
-  answer: null,
-  answering: null,
-  answers: [],
   currentQuestion: null,
+  answers: [],
+  scores: [],
 };
 
 const Game: React.FC = () => {
@@ -59,6 +59,14 @@ const Game: React.FC = () => {
     ));
   };
 
+  const renderScores = (scores: PlayerScore[]) => {
+    return scores.map((s) => (
+      <div>
+        {s.username}: {s.score}
+      </div>
+    ));
+  };
+
   if (gameState.currentState === "WAITING") {
     return (
       <div>
@@ -90,13 +98,27 @@ const Game: React.FC = () => {
   if (gameState?.currentState === "ANSWER") {
     return (
       <div>
-        {gameState.currentQuestion?.answers[gameState.currentQuestion.answer]}
+        <div>
+          {gameState.currentQuestion?.answers[gameState.currentQuestion.answer]}
+        </div>
+        <div>
+          {gameState.answers.map((a) => (
+            <div>
+              {a.username}: {a.answer}
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (gameState.currentState === "SCORE") {
-    return <div>SCORES</div>;
+    return (
+      <div>
+        <div>SCORES</div>
+        <div>{renderScores(gameState.scores)}</div>
+      </div>
+    );
   }
 
   if (gameState.currentState === "ENDED") {
