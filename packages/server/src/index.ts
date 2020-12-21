@@ -4,12 +4,13 @@ import { createServer } from "http";
 import { generateRoomCode } from "./utils/helpers";
 import { JoiningPlayerData, SocketWithProps } from "./types";
 import { GameRoom } from "./classes/GameRoom";
+import fetch from "node-fetch";
 
 const app = express();
 const server = createServer(app);
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
-const io = ioserver(server, {
+const io: Server = ioserver(server, {
   cors: {
     origin: "*",
   },
@@ -33,7 +34,6 @@ io.on("connection", (socket: SocketWithProps) => {
     socket.join(roomCode);
   });
 
-  //First one joining the game room will be the game host.
   socket.on("join-room-player", (player: JoiningPlayerData) => {
     console.log(`${player.username} joining room: ${player.roomCode}`);
 
@@ -61,6 +61,7 @@ io.on("connection", (socket: SocketWithProps) => {
     socket.playerData = {
       username: player.username,
       ready: false,
+      points: 0,
     };
     socket.roomCode = player.roomCode;
 
@@ -72,25 +73,56 @@ io.on("connection", (socket: SocketWithProps) => {
       players: room?.sockets.map((s) => s.playerData),
     });
     socket.emit("connected", socket.playerData);
+    io.to(socket.roomCode).emit("game-state-update", room?.gameState);
   });
 
-  socket.on("start-game", () => {
-    console.log(`Game started on room: ${socket.roomCode}`);
-
+  socket.on("player-ready", async (rdy: boolean) => {
+    socket.playerData.ready = rdy;
     const room = getRoomByCode(socket.roomCode);
+    io.to(socket.roomCode).emit("game-state-update", room?.getGameState());
+
     const allPlayersRdy = room?.getGameState().players.every((p) => p.ready);
 
-    if (room && allPlayersRdy == true) {
-      room.gameState.gameStarted = true;
+    if (room && allPlayersRdy === true) {
+      console.log(`Game started on room: ${socket.roomCode}`);
+      room.gameState.currentState = "STARTED";
+
+      io.to(socket.roomCode).emit("game-state-update", room.gameState);
+      await wait(2000);
+
+      const rounds = 2;
+      let round = 0;
+
+      //Main game loop
+      while (round < rounds) {
+        room.gameState.answering = room.getGameState().players[0];
+        const response = await fetch("http://localhost:4000/questions");
+        const question = await response.json();
+        room.gameState.currentQuestion = question[0];
+        room.gameState.currentState = "QUESTION";
+        io.to(socket.roomCode).emit("game-state-update", room.gameState);
+        await wait(10000);
+
+        room.gameState.currentState = "ANSWER";
+        io.to(socket.roomCode).emit("game-state-update", room.gameState);
+        await wait(5000);
+
+        room.gameState.currentState = "SCORE";
+        io.to(socket.roomCode).emit("game-state-update", room.gameState);
+        await wait(5000);
+
+        round++;
+      }
+      room.gameState.currentState = "ENDED";
       io.to(socket.roomCode).emit("game-state-update", room.gameState);
     }
   });
 
-  socket.on("player-ready", (rdy: boolean) => {
-    socket.playerData.ready = rdy;
-    const room = getRoomByCode(socket.roomCode);
-    io.to(socket.roomCode).emit("game-state-update", room?.getGameState());
-  });
+  function wait(ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
 
   socket.on("disconnect", () => {
     if (socket.type === "GAME") {

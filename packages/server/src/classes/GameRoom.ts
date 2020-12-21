@@ -7,7 +7,14 @@ export class GameRoom {
 
   constructor(roomCode: string) {
     this.roomCode = roomCode;
-    this.gameState = { gameStarted: false, players: [] };
+    this.gameState = {
+      currentState: "WAITING",
+      players: [],
+      answering: null,
+      currentQuestion: null,
+      answer: null,
+      answers: [],
+    };
     this.sockets = [];
   }
 

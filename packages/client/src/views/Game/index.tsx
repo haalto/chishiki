@@ -1,15 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   GameState,
-  ResponsePlayers,
+  PlayerData,
   ResponseCreateRoom,
-  Player,
-} from "../../types";
+  ResponsePlayers,
+} from "../../../../server/src/types";
 import io from "socket.io-client";
 
-const initialGameState = {
+const initialGameState: GameState = {
   players: [],
-  gameStarted: false,
+  currentState: "WAITING",
+  answer: null,
+  answering: null,
+  answers: [],
+  currentQuestion: null,
 };
 
 const Game: React.FC = () => {
@@ -47,30 +51,59 @@ const Game: React.FC = () => {
     console.log(gameState);
   }, [gameState]);
 
-  const renderPlayers = (players: Player[]) => {
+  const renderPlayers = (players: PlayerData[]) => {
     return players.map((p, i) => (
       <div key={i}>
-        {p.isHost ? <b>{p.username}</b> : p.username} Ready:{" "}
-        {p.ready.toString()}
+        {p.username} Ready: {p.ready.toString()}
       </div>
     ));
   };
 
-  if (gameState.gameStarted) {
+  if (gameState.currentState === "WAITING") {
     return (
       <div>
-        Game started!<div>{renderPlayers(gameState.players)}</div>
+        <span>Join the room using following code!</span>
+        <div>{roomCode}</div>
+        {renderPlayers(gameState.players)}
       </div>
     );
   }
 
-  return (
-    <div>
-      <span>Join the room using following code!</span>
-      <div>{roomCode}</div>
-      {renderPlayers(gameState.players)}
-    </div>
-  );
+  if (gameState.currentState === "STARTED") {
+    return <div>Game started!</div>;
+  }
+
+  if (
+    gameState.currentState === "QUESTION" &&
+    gameState.currentQuestion?.question
+  ) {
+    return (
+      <>
+        <div>{gameState?.currentQuestion?.question}</div>
+        {gameState.currentQuestion.answers.map((a, i) => (
+          <div key={i}>{a}</div>
+        ))}
+      </>
+    );
+  }
+
+  if (gameState?.currentState === "ANSWER") {
+    return (
+      <div>
+        {gameState.currentQuestion?.answers[gameState.currentQuestion.answer]}
+      </div>
+    );
+  }
+
+  if (gameState.currentState === "SCORE") {
+    return <div>SCORES</div>;
+  }
+
+  if (gameState.currentState === "ENDED") {
+    return <div>Game ended!</div>;
+  }
+
+  return <div>Loading</div>;
 };
 
 export default Game;
