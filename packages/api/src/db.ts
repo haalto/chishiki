@@ -41,7 +41,7 @@ export const getRandomQuestions = async (
   upperDif: number
 ): Promise<Question[]> => {
   const question = await db.query<Question>(
-    "SELECT * FROM data.final_questions WHERE difficulty BETWEEN $2 AND $3 OFFSET floor(random() * ( SELECT COUNT(*) FROM data.final_questions WHERE difficulty BETWEEN $2 AND $3)) LIMIT $1;",
+    "SELECT id::int, question, answers, answer::int, category, difficulty::float  FROM data.final_questions WHERE difficulty BETWEEN $2 AND $3 OFFSET floor(random() * ( SELECT COUNT(*) FROM data.final_questions WHERE difficulty BETWEEN $2 AND $3)) LIMIT $1;",
     [
       checkLimit(limit),
       checkDifficultyValue(lowerDif),

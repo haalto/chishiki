@@ -2,6 +2,9 @@ import * as awsx from "@pulumi/awsx";
 import { config } from "dotenv";
 config();
 
+console.log(process.env.PGUSER);
+console.log(process.env.PGHOST);
+
 const apiListener = new awsx.elasticloadbalancingv2.NetworkListener(
   "api-listener",
   { port: 4000 }
@@ -16,9 +19,9 @@ const apiService = new awsx.ecs.FargateService("api-service", {
         environment: [
           { name: "PGUSER", value: process.env.PGUSER },
           { name: "PGHOST", value: process.env.PGHOST },
-          { name: "PGPASSWORD", value: process.env.PGUSER },
-          { name: "PGDATABASE", value: process.env.PGUSER },
-          { name: "PGPORT", value: process.env.PGUSER },
+          { name: "PGPASSWORD", value: process.env.PGPASSWORD },
+          { name: "PGDATABASE", value: process.env.PGDATABASE },
+          { name: "PGPORT", value: process.env.PGPORT },
         ],
       },
     },
@@ -56,11 +59,16 @@ const clientService = new awsx.ecs.FargateService("client-service", {
         memory: 512,
         portMappings: [clientListener],
         environment: [
-          { name: "SERVER_HOSTNAME", value: serverListener.endpoint.hostname },
+          {
+            name: "REACT_APP_SERVER_URI",
+            value: serverListener.endpoint.hostname,
+          },
         ],
       },
     },
   },
 });
 
-export let URL = clientListener.endpoint.hostname;
+export let CLIENT = clientListener.endpoint.hostname;
+export let API = apiListener.endpoint.hostname;
+export let SERVER = serverListener.endpoint.hostname;

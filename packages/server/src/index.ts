@@ -1,10 +1,11 @@
 import express from "express";
-import ioserver from "socket.io";
+import ioserver, { Server } from "socket.io";
 import { createServer } from "http";
 import { generateRoomCode } from "./utils/helpers";
-import { JoiningPlayerData, SocketWithProps } from "./types";
 import { GameRoom } from "./classes/GameRoom";
 import fetch from "node-fetch";
+import { JoiningPlayerData, SocketWithProps } from "./types";
+import { config } from "./config";
 
 const app = express();
 const server = createServer(app);
@@ -63,6 +64,7 @@ io.on("connection", (socket: SocketWithProps) => {
       ready: false,
       score: 0,
       answer: null,
+      answerTime: null,
     };
     socket.roomCode = player.roomCode;
 
@@ -91,12 +93,12 @@ io.on("connection", (socket: SocketWithProps) => {
       io.to(socket.roomCode).emit("game-state-update", room.getGameState());
       await wait(2000);
 
-      const rounds = 2;
+      const rounds = 10;
       let round = 0;
 
       //Main game loop
       while (round < rounds) {
-        const response = await fetch("http://localhost:4000/questions");
+        const response = await fetch(`http://${config.API_URI}:4000/questions`);
         const question = await response.json();
         room.gameState.currentQuestion = question[0];
         room.setState("QUESTION");
@@ -108,7 +110,6 @@ io.on("connection", (socket: SocketWithProps) => {
         await wait(5000);
 
         room.setState("SCORE");
-        console.log(room.gameState.scores);
         io.to(socket.roomCode).emit("game-state-update", room.getGameState());
         await wait(5000);
 
@@ -119,15 +120,14 @@ io.on("connection", (socket: SocketWithProps) => {
     }
   });
 
-  socket.on("player-answer", (answer) => {
+  socket.on("player-answer", (answer: string) => {
     const room = getRoomByCode(socket.roomCode);
 
     if (!room) {
       return;
     }
-
+    socket.playerData.answerTime = new Date().getTime();
     socket.playerData.answer = answer;
-    console.log(socket.playerData.answer);
   });
 
   socket.on("disconnect", () => {

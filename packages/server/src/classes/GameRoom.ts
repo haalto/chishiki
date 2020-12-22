@@ -4,6 +4,7 @@ export class GameRoom {
   roomCode: string;
   gameState: GameState;
   sockets: SocketWithProps[];
+  questionStartTime: number | null;
 
   constructor(roomCode: string) {
     this.roomCode = roomCode;
@@ -15,6 +16,7 @@ export class GameRoom {
       scores: [],
     };
     this.sockets = [];
+    this.questionStartTime = null;
   }
 
   public setState(newState: CurrentState): void {
@@ -25,9 +27,13 @@ export class GameRoom {
     if (newState === "STARTED") {
       this.gameState.currentState = newState;
     }
+
     if (newState === "QUESTION") {
+      this.questionStartTime = new Date().getTime();
+      console.log(this.questionStartTime);
       this.gameState.currentState = newState;
     }
+
     if (newState === "ANSWER") {
       this.gameState.currentState = newState;
     }
@@ -60,23 +66,26 @@ export class GameRoom {
     const players = this.sockets.map((s) => s.playerData);
 
     for (const player of players) {
-      if (player.answer) {
+      if (player.answer && player.answerTime) {
         const answerIndex = this?.gameState?.currentQuestion?.answers.indexOf(
           player.answer
         );
 
-        console.log(answerIndex, this.gameState.currentQuestion?.answer);
+        console.log(this.questionStartTime);
+        console.log(player.answerTime);
 
-        if (answerIndex === this.gameState.currentQuestion?.answer) {
-          console.log("correct");
-          player.score += 1;
+        if (
+          answerIndex === this.gameState.currentQuestion?.answer &&
+          this.questionStartTime
+        ) {
+          player.score += (this.questionStartTime - player.answerTime) * -1;
         }
-
-        this.gameState.scores.push({
-          username: player.username,
-          score: player.score,
-        });
       }
+      this.gameState.scores.push({
+        username: player.username,
+        score: player.score,
+      });
+      this.questionStartTime = null;
     }
   }
 
@@ -85,6 +94,7 @@ export class GameRoom {
     this.gameState.answers = players.map((p) => ({
       answer: p.answer,
       username: p.username,
+      time: new Date().getTime(),
     }));
   }
 

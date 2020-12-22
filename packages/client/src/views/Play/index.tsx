@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 import useNavigation from "../../hooks/useNavigation";
-import { GameState } from "../../../../server/src/types";
+import { GameState } from "../../types";
+import { config } from "../../config";
 
 interface ParamTypes {
   roomCode: string;
@@ -26,7 +27,7 @@ const Play: React.FC = () => {
   const { goToLanding } = useNavigation();
 
   const { current: socket } = useRef(
-    io("http://localhost:5001", {
+    io(`http://${config.SERVER_URI}`, {
       autoConnect: false,
     })
   );
@@ -107,7 +108,8 @@ const Play: React.FC = () => {
   }
 
   if (gameState?.currentState === "ENDED") {
-    return <div>Game ended!</div>;
+    socket.disconnect();
+    goToLanding();
   }
 
   return <div>Loading</div>;

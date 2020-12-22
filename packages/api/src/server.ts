@@ -12,7 +12,7 @@ const server: FastifyInstance<
   Server,
   IncomingMessage,
   ServerResponse
-> = fastify({ logger: false });
+> = fastify({ logger: true });
 
 function build(): FastifyInstance {
   server.get("/questions", async (request) => {

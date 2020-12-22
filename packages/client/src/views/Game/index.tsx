@@ -1,12 +1,14 @@
+import { config } from "../../config";
 import React, { useEffect, useRef, useState } from "react";
+import io from "socket.io-client";
+import useNavigation from "../../hooks/useNavigation";
 import {
   GameState,
   PlayerData,
   PlayerScore,
   ResponseCreateRoom,
   ResponsePlayers,
-} from "../../../../server/src/types";
-import io from "socket.io-client";
+} from "../../types";
 
 const initialGameState: GameState = {
   players: [],
@@ -19,9 +21,11 @@ const initialGameState: GameState = {
 const Game: React.FC = () => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [gameState, setGameState] = useState<GameState>(initialGameState);
-
+  const { goToLanding } = useNavigation();
+  console.log(config.SERVER_URI);
+  console.log(process.env.REACT_APP_SERVER_URI);
   const { current: socket } = useRef(
-    io("http://localhost:5001", {
+    io(`http://${config.SERVER_URI}`, {
       autoConnect: false,
     })
   );
@@ -78,7 +82,7 @@ const Game: React.FC = () => {
   }
 
   if (gameState.currentState === "STARTED") {
-    return <div>Game started!</div>;
+    return <div>Game is starting!</div>;
   }
 
   if (
@@ -122,7 +126,8 @@ const Game: React.FC = () => {
   }
 
   if (gameState.currentState === "ENDED") {
-    return <div>Game ended!</div>;
+    socket.disconnect();
+    goToLanding();
   }
 
   return <div>Loading</div>;

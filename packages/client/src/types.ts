@@ -1,5 +1,3 @@
-import { Socket } from "socket.io/dist/socket";
-
 export type CurrentState =
   | "WAITING"
   | "STARTED"
@@ -14,12 +12,6 @@ export type GameState = {
   currentQuestion: Question | null;
   scores: PlayerScore[];
 };
-
-export interface SocketWithProps extends Socket {
-  playerData: PlayerData;
-  roomCode: string;
-  type: "GAME" | "PLAYER";
-}
 
 export type PlayerScore = {
   username: string;
