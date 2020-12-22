@@ -2,5 +2,11 @@
   "name": "infra",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@pulumi/aws": "^3.21.0",
+    "@pulumi/awsx": "^0.23.0",
+    "@pulumi/pulumi": "^2.16.0",
+    "dotenv": "^8.2.0"
+  }
 }
