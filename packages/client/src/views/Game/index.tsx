@@ -22,6 +22,7 @@ const Game: React.FC = () => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const { goToLanding } = useNavigation();
+  console.log(process.env);
   console.log(config.SERVER_URI);
   console.log(process.env.REACT_APP_SERVER_URI);
   const { current: socket } = useRef(

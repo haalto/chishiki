@@ -1,8 +1,5 @@
 FROM node:14 as builder
 ENV NODE_ENV=production
-ARG REACT_APP_SERVER_URI
-ENV REACT_APP_SERVER_URI=${REACT_APP_SERVER_URI}
-RUN printenv
 WORKDIR /app
 COPY . .
 RUN yarn
