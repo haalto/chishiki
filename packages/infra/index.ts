@@ -7,6 +7,7 @@ const apiListener = new awsx.elasticloadbalancingv2.NetworkListener(
   { port: 4000 }
 );
 const apiService = new awsx.ecs.FargateService("api-service", {
+  waitForSteadyState: false,
   taskDefinitionArgs: {
     containers: {
       serversideService: {
@@ -30,6 +31,7 @@ const serverListener = new awsx.elasticloadbalancingv2.NetworkListener(
   { port: 5001 }
 );
 const serverService = new awsx.ecs.FargateService("server-service", {
+  waitForSteadyState: false,
   taskDefinitionArgs: {
     containers: {
       serversideService: {
@@ -49,6 +51,7 @@ const clientListener = new awsx.elasticloadbalancingv2.NetworkListener(
   { port: 80 }
 );
 const clientService = new awsx.ecs.FargateService("client-service", {
+  waitForSteadyState: false,
   taskDefinitionArgs: {
     containers: {
       clientsideService: {
