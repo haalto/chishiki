@@ -1,0 +1,758 @@
+{
+    "version": 3,
+    "deployment": {
+        "manifest": {
+            "time": "2020-12-23T15:53:15.2546598+02:00",
+            "magic": "9d780eb0bf68444ba853bba692e650e2b9146283ab7cf7cc3776eab9f49f667a",
+            "version": "v2.16.0"
+        },
+        "secrets_providers": {
+            "type": "service",
+            "state": {
+                "url": "https://api.pulumi.com",
+                "owner": "haalto",
+                "project": "Chishiki",
+                "stack": "chishiki"
+            }
+        },
+        "resources": [
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki",
+                "custom": false,
+                "type": "pulumi:pulumi:Stack",
+                "outputs": {
+                    "API": "api-listener-e0ac1cb-23102137d666fbe0.elb.eu-north-1.amazonaws.com",
+                    "CLIENT": "client-listener-2c9ed5c-96a86dfc21a715a9.elb.eu-north-1.amazonaws.com",
+                    "SERVER": "server-listener-2f4b33a-8011be0f19eec337.elb.eu-north-1.amazonaws.com"
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0",
+                "custom": true,
+                "id": "3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "type": "pulumi:providers:aws",
+                "inputs": {
+                    "region": "eu-north-1",
+                    "version": "3.21.0"
+                },
+                "outputs": {
+                    "region": "eu-north-1",
+                    "version": "3.21.0"
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::server-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkLoadBalancer",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer::server-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateService::server-service",
+                "custom": false,
+                "type": "awsx:x:ecs:FargateService",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::api-service",
+                "custom": false,
+                "type": "awsx:x:ecs:FargateTaskDefinition",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateService::api-service",
+                "custom": false,
+                "type": "awsx:x:ecs:FargateService",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateService::client-service",
+                "custom": false,
+                "type": "awsx:x:ecs:FargateService",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::server-service",
+                "custom": false,
+                "type": "awsx:x:ecs:FargateTaskDefinition",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:Cluster::default-cluster",
+                "custom": false,
+                "type": "awsx:x:ecs:Cluster",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::client-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkLoadBalancer",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer::client-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::api-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkLoadBalancer",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer::api-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::client-service",
+                "custom": false,
+                "type": "awsx:x:ecs:FargateTaskDefinition",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:ecr/repository:Repository::api-service",
+                "custom": true,
+                "id": "api-service-a5863dd",
+                "type": "aws:ecr/repository:Repository",
+                "inputs": {
+                    "__defaults": [
+                        "imageTagMutability",
+                        "name"
+                    ],
+                    "imageTagMutability": "MUTABLE",
+                    "name": "api-service-a5863dd"
+                },
+                "outputs": {
+                    "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"delete\":1200000000000}}",
+                    "arn": "arn:aws:ecr:eu-north-1:125674537650:repository/api-service-a5863dd",
+                    "encryptionConfigurations": [
+                        {
+                            "encryptionType": "AES256",
+                            "kmsKey": ""
+                        }
+                    ],
+                    "id": "api-service-a5863dd",
+                    "imageScanningConfiguration": {
+                        "scanOnPush": false
+                    },
+                    "imageTagMutability": "MUTABLE",
+                    "name": "api-service-a5863dd",
+                    "registryId": "125674537650",
+                    "repositoryUrl": "125674537650.dkr.ecr.eu-north-1.amazonaws.com/api-service-a5863dd",
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::api-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:iam/role:Role::api-service-execution",
+                "custom": true,
+                "id": "api-service-execution-6e263f2",
+                "type": "aws:iam/role:Role",
+                "inputs": {
+                    "__defaults": [
+                        "forceDetachPolicies",
+                        "maxSessionDuration",
+                        "name",
+                        "path"
+                    ],
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Effect\":\"Allow\",\"Sid\":\"\"}]}",
+                    "forceDetachPolicies": false,
+                    "maxSessionDuration": 3600,
+                    "name": "api-service-execution-6e263f2",
+                    "path": "/"
+                },
+                "outputs": {
+                    "arn": "arn:aws:iam::125674537650:role/api-service-execution-6e263f2",
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                    "createDate": "2020-12-22T22:44:57Z",
+                    "description": "",
+                    "forceDetachPolicies": false,
+                    "id": "api-service-execution-6e263f2",
+                    "maxSessionDuration": 3600,
+                    "name": "api-service-execution-6e263f2",
+                    "path": "/",
+                    "tags": {},
+                    "uniqueId": "AROAR2QWJIKZBIZ5OBYJO"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::api-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "assumeRolePolicy": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:iam/role:Role::api-service-task",
+                "custom": true,
+                "id": "api-service-task-6bbfd80",
+                "type": "aws:iam/role:Role",
+                "inputs": {
+                    "__defaults": [
+                        "forceDetachPolicies",
+                        "maxSessionDuration",
+                        "name",
+                        "path"
+                    ],
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Effect\":\"Allow\",\"Sid\":\"\"}]}",
+                    "forceDetachPolicies": false,
+                    "maxSessionDuration": 3600,
+                    "name": "api-service-task-6bbfd80",
+                    "path": "/"
+                },
+                "outputs": {
+                    "arn": "arn:aws:iam::125674537650:role/api-service-task-6bbfd80",
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                    "createDate": "2020-12-22T22:44:55Z",
+                    "description": "",
+                    "forceDetachPolicies": false,
+                    "id": "api-service-task-6bbfd80",
+                    "maxSessionDuration": 3600,
+                    "name": "api-service-task-6bbfd80",
+                    "path": "/",
+                    "tags": {},
+                    "uniqueId": "AROAR2QWJIKZF5MVEZ4CJ"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::api-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "assumeRolePolicy": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:cloudwatch/logGroup:LogGroup::api-service",
+                "custom": true,
+                "id": "api-service-f60c1e2",
+                "type": "aws:cloudwatch/logGroup:LogGroup",
+                "inputs": {
+                    "__defaults": [
+                        "name"
+                    ],
+                    "name": "api-service-f60c1e2",
+                    "retentionInDays": 1
+                },
+                "outputs": {
+                    "arn": "arn:aws:logs:eu-north-1:125674537650:log-group:api-service-f60c1e2",
+                    "id": "api-service-f60c1e2",
+                    "kmsKeyId": "",
+                    "name": "api-service-f60c1e2",
+                    "retentionInDays": 1,
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::api-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "retentionInDays": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::server-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkTargetGroup",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::server-listener",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:x:elasticloadbalancingv2:NetworkTargetGroup::server-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::server-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::server-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkListener::server-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkListener",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::server-listener",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:x:elasticloadbalancingv2:NetworkListener::server-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkListener::server-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer$awsx:lb:NetworkListener::server-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkListener::api-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkListener",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::api-listener",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:x:elasticloadbalancingv2:NetworkListener::api-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkListener::api-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer$awsx:lb:NetworkListener::api-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::api-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkTargetGroup",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::api-listener",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:x:elasticloadbalancingv2:NetworkTargetGroup::api-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::api-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::api-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:iam/role:Role::server-service-execution",
+                "custom": true,
+                "id": "server-service-execution-7c6afee",
+                "type": "aws:iam/role:Role",
+                "inputs": {
+                    "__defaults": [
+                        "forceDetachPolicies",
+                        "maxSessionDuration",
+                        "name",
+                        "path"
+                    ],
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Effect\":\"Allow\",\"Sid\":\"\"}]}",
+                    "forceDetachPolicies": false,
+                    "maxSessionDuration": 3600,
+                    "name": "server-service-execution-7c6afee",
+                    "path": "/"
+                },
+                "outputs": {
+                    "arn": "arn:aws:iam::125674537650:role/server-service-execution-7c6afee",
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                    "createDate": "2020-12-22T22:44:44Z",
+                    "description": "",
+                    "forceDetachPolicies": false,
+                    "id": "server-service-execution-7c6afee",
+                    "maxSessionDuration": 3600,
+                    "name": "server-service-execution-7c6afee",
+                    "path": "/",
+                    "tags": {},
+                    "uniqueId": "AROAR2QWJIKZONDBOEJ3X"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::server-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "assumeRolePolicy": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:cloudwatch/logGroup:LogGroup::server-service",
+                "custom": true,
+                "id": "server-service-3564aa8",
+                "type": "aws:cloudwatch/logGroup:LogGroup",
+                "inputs": {
+                    "__defaults": [
+                        "name"
+                    ],
+                    "name": "server-service-3564aa8",
+                    "retentionInDays": 1
+                },
+                "outputs": {
+                    "arn": "arn:aws:logs:eu-north-1:125674537650:log-group:server-service-3564aa8",
+                    "id": "server-service-3564aa8",
+                    "kmsKeyId": "",
+                    "name": "server-service-3564aa8",
+                    "retentionInDays": 1,
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::server-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "retentionInDays": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:ecr/repository:Repository::server-service",
+                "custom": true,
+                "id": "server-service-2033726",
+                "type": "aws:ecr/repository:Repository",
+                "inputs": {
+                    "__defaults": [
+                        "imageTagMutability",
+                        "name"
+                    ],
+                    "imageTagMutability": "MUTABLE",
+                    "name": "server-service-2033726"
+                },
+                "outputs": {
+                    "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"delete\":1200000000000}}",
+                    "arn": "arn:aws:ecr:eu-north-1:125674537650:repository/server-service-2033726",
+                    "encryptionConfigurations": [
+                        {
+                            "encryptionType": "AES256",
+                            "kmsKey": ""
+                        }
+                    ],
+                    "id": "server-service-2033726",
+                    "imageScanningConfiguration": {
+                        "scanOnPush": false
+                    },
+                    "imageTagMutability": "MUTABLE",
+                    "name": "server-service-2033726",
+                    "registryId": "125674537650",
+                    "repositoryUrl": "125674537650.dkr.ecr.eu-north-1.amazonaws.com/server-service-2033726",
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::server-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:iam/role:Role::server-service-task",
+                "custom": true,
+                "id": "server-service-task-3588757",
+                "type": "aws:iam/role:Role",
+                "inputs": {
+                    "__defaults": [
+                        "forceDetachPolicies",
+                        "maxSessionDuration",
+                        "name",
+                        "path"
+                    ],
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Effect\":\"Allow\",\"Sid\":\"\"}]}",
+                    "forceDetachPolicies": false,
+                    "maxSessionDuration": 3600,
+                    "name": "server-service-task-3588757",
+                    "path": "/"
+                },
+                "outputs": {
+                    "arn": "arn:aws:iam::125674537650:role/server-service-task-3588757",
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                    "createDate": "2020-12-22T22:44:43Z",
+                    "description": "",
+                    "forceDetachPolicies": false,
+                    "id": "server-service-task-3588757",
+                    "maxSessionDuration": 3600,
+                    "name": "server-service-task-3588757",
+                    "path": "/",
+                    "tags": {},
+                    "uniqueId": "AROAR2QWJIKZEC2A3XCGL"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::server-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "assumeRolePolicy": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:Cluster$awsx:x:ec2:SecurityGroup::default-cluster",
+                "custom": false,
+                "type": "awsx:x:ec2:SecurityGroup",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:Cluster::default-cluster"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:Cluster$aws:ecs/cluster:Cluster::default-cluster",
+                "custom": true,
+                "id": "arn:aws:ecs:eu-north-1:125674537650:cluster/default-cluster-dad480a",
+                "type": "aws:ecs/cluster:Cluster",
+                "inputs": {
+                    "__defaults": [
+                        "name"
+                    ],
+                    "name": "default-cluster-dad480a"
+                },
+                "outputs": {
+                    "arn": "arn:aws:ecs:eu-north-1:125674537650:cluster/default-cluster-dad480a",
+                    "capacityProviders": [],
+                    "defaultCapacityProviderStrategies": [],
+                    "id": "arn:aws:ecs:eu-north-1:125674537650:cluster/default-cluster-dad480a",
+                    "name": "default-cluster-dad480a",
+                    "settings": [
+                        {
+                            "name": "containerInsights",
+                            "value": "disabled"
+                        }
+                    ],
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:Cluster::default-cluster",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::client-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkTargetGroup",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::client-listener",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:x:elasticloadbalancingv2:NetworkTargetGroup::client-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::client-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer$awsx:lb:NetworkTargetGroup::client-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:lb:NetworkListener::client-listener",
+                "custom": false,
+                "type": "awsx:lb:NetworkListener",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer::client-listener",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkLoadBalancer$awsx:x:elasticloadbalancingv2:NetworkListener::client-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:lb:NetworkListener::client-listener",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:elasticloadbalancingv2:NetworkLoadBalancer$awsx:lb:NetworkListener::client-listener"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::aws:ec2/vpc:Vpc::default-vpc",
+                "custom": true,
+                "id": "vpc-e220fb8b",
+                "type": "aws:ec2/vpc:Vpc",
+                "outputs": {
+                    "__meta": "{\"schema_version\":\"1\"}",
+                    "arn": "arn:aws:ec2:eu-north-1:125674537650:vpc/vpc-e220fb8b",
+                    "assignGeneratedIpv6CidrBlock": false,
+                    "cidrBlock": "172.31.0.0/16",
+                    "defaultNetworkAclId": "acl-a6d50fcf",
+                    "defaultRouteTableId": "rtb-0534ee6c",
+                    "defaultSecurityGroupId": "sg-58931234",
+                    "dhcpOptionsId": "dopt-4b845e22",
+                    "enableDnsHostnames": true,
+                    "enableDnsSupport": true,
+                    "id": "vpc-e220fb8b",
+                    "instanceTenancy": "default",
+                    "ipv6AssociationId": "",
+                    "ipv6CidrBlock": "",
+                    "mainRouteTableId": "rtb-0534ee6c",
+                    "ownerId": "125674537650",
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki",
+                "external": true,
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:cloudwatch/logGroup:LogGroup::client-service",
+                "custom": true,
+                "id": "client-service-b7b0370",
+                "type": "aws:cloudwatch/logGroup:LogGroup",
+                "inputs": {
+                    "__defaults": [
+                        "name"
+                    ],
+                    "name": "client-service-b7b0370",
+                    "retentionInDays": 1
+                },
+                "outputs": {
+                    "arn": "arn:aws:logs:eu-north-1:125674537650:log-group:client-service-b7b0370",
+                    "id": "client-service-b7b0370",
+                    "kmsKeyId": "",
+                    "name": "client-service-b7b0370",
+                    "retentionInDays": 1,
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::client-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "retentionInDays": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:iam/role:Role::client-service-task",
+                "custom": true,
+                "id": "client-service-task-f2f1e54",
+                "type": "aws:iam/role:Role",
+                "inputs": {
+                    "__defaults": [
+                        "forceDetachPolicies",
+                        "maxSessionDuration",
+                        "name",
+                        "path"
+                    ],
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Effect\":\"Allow\",\"Sid\":\"\"}]}",
+                    "forceDetachPolicies": false,
+                    "maxSessionDuration": 3600,
+                    "name": "client-service-task-f2f1e54",
+                    "path": "/"
+                },
+                "outputs": {
+                    "arn": "arn:aws:iam::125674537650:role/client-service-task-f2f1e54",
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                    "createDate": "2020-12-22T22:44:52Z",
+                    "description": "",
+                    "forceDetachPolicies": false,
+                    "id": "client-service-task-f2f1e54",
+                    "maxSessionDuration": 3600,
+                    "name": "client-service-task-f2f1e54",
+                    "path": "/",
+                    "tags": {},
+                    "uniqueId": "AROAR2QWJIKZLZ7GHZ4RO"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::client-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "assumeRolePolicy": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:ecr/repository:Repository::client-service",
+                "custom": true,
+                "id": "client-service-fb10187",
+                "type": "aws:ecr/repository:Repository",
+                "inputs": {
+                    "__defaults": [
+                        "imageTagMutability",
+                        "name"
+                    ],
+                    "imageTagMutability": "MUTABLE",
+                    "name": "client-service-fb10187"
+                },
+                "outputs": {
+                    "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"delete\":1200000000000}}",
+                    "arn": "arn:aws:ecr:eu-north-1:125674537650:repository/client-service-fb10187",
+                    "encryptionConfigurations": [
+                        {
+                            "encryptionType": "AES256",
+                            "kmsKey": ""
+                        }
+                    ],
+                    "id": "client-service-fb10187",
+                    "imageScanningConfiguration": {
+                        "scanOnPush": false
+                    },
+                    "imageTagMutability": "MUTABLE",
+                    "name": "client-service-fb10187",
+                    "registryId": "125674537650",
+                    "repositoryUrl": "125674537650.dkr.ecr.eu-north-1.amazonaws.com/client-service-fb10187",
+                    "tags": {}
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::client-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:iam/role:Role::client-service-execution",
+                "custom": true,
+                "id": "client-service-execution-7c6b037",
+                "type": "aws:iam/role:Role",
+                "inputs": {
+                    "__defaults": [
+                        "forceDetachPolicies",
+                        "maxSessionDuration",
+                        "name",
+                        "path"
+                    ],
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Effect\":\"Allow\",\"Sid\":\"\"}]}",
+                    "forceDetachPolicies": false,
+                    "maxSessionDuration": 3600,
+                    "name": "client-service-execution-7c6b037",
+                    "path": "/"
+                },
+                "outputs": {
+                    "arn": "arn:aws:iam::125674537650:role/client-service-execution-7c6b037",
+                    "assumeRolePolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                    "createDate": "2020-12-22T22:44:52Z",
+                    "description": "",
+                    "forceDetachPolicies": false,
+                    "id": "client-service-execution-7c6b037",
+                    "maxSessionDuration": 3600,
+                    "name": "client-service-execution-7c6b037",
+                    "path": "/",
+                    "tags": {},
+                    "uniqueId": "AROAR2QWJIKZHYM5C2U6Q"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::client-service",
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "assumeRolePolicy": null
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc::default-vpc",
+                "custom": false,
+                "type": "awsx:x:ec2:Vpc",
+                "parent": "urn:pulumi:chishiki::Chishiki::pulumi:pulumi:Stack::Chishiki-chishiki",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc::default-vpc",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc::default-vpc-e220fb8b"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:ecr/lifecyclePolicy:LifecyclePolicy::api-service",
+                "custom": true,
+                "id": "api-service-a5863dd",
+                "type": "aws:ecr/lifecyclePolicy:LifecyclePolicy",
+                "inputs": {
+                    "__defaults": [],
+                    "policy": "{\"rules\":[{\"rulePriority\":10,\"description\":\"remove untagged images\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"imageCountMoreThan\",\"countNumber\":1},\"action\":{\"type\":\"expire\"}}]}",
+                    "repository": "api-service-a5863dd"
+                },
+                "outputs": {
+                    "id": "api-service-a5863dd",
+                    "policy": "{\"rules\":[{\"rulePriority\":10,\"description\":\"remove untagged images\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"imageCountMoreThan\",\"countNumber\":1},\"action\":{\"type\":\"expire\"}}]}",
+                    "registryId": "125674537650",
+                    "repository": "api-service-a5863dd"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition::api-service",
+                "dependencies": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:ecr/repository:Repository::api-service"
+                ],
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3",
+                "propertyDependencies": {
+                    "policy": null,
+                    "repository": [
+                        "urn:pulumi:chishiki::Chishiki::awsx:x:ecs:FargateTaskDefinition$aws:ecr/repository:Repository::api-service"
+                    ]
+                }
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$aws:ec2/subnet:Subnet::default-vpc-public-0",
+                "custom": true,
+                "id": "subnet-b318e3c8",
+                "type": "aws:ec2/subnet:Subnet",
+                "outputs": {
+                    "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000},\"schema_version\":\"1\"}",
+                    "arn": "arn:aws:ec2:eu-north-1:125674537650:subnet/subnet-b318e3c8",
+                    "assignIpv6AddressOnCreation": false,
+                    "availabilityZone": "eu-north-1b",
+                    "availabilityZoneId": "eun1-az2",
+                    "cidrBlock": "172.31.32.0/20",
+                    "id": "subnet-b318e3c8",
+                    "ipv6CidrBlock": "",
+                    "ipv6CidrBlockAssociationId": "",
+                    "mapPublicIpOnLaunch": true,
+                    "outpostArn": "",
+                    "ownerId": "125674537650",
+                    "tags": {},
+                    "vpcId": "vpc-e220fb8b"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc::default-vpc",
+                "external": true,
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$aws:ec2/subnet:Subnet::default-vpc-public-1",
+                "custom": true,
+                "id": "subnet-86f129ef",
+                "type": "aws:ec2/subnet:Subnet",
+                "outputs": {
+                    "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":1200000000000},\"schema_version\":\"1\"}",
+                    "arn": "arn:aws:ec2:eu-north-1:125674537650:subnet/subnet-86f129ef",
+                    "assignIpv6AddressOnCreation": false,
+                    "availabilityZone": "eu-north-1a",
+                    "availabilityZoneId": "eun1-az1",
+                    "cidrBlock": "172.31.16.0/20",
+                    "id": "subnet-86f129ef",
+                    "ipv6CidrBlock": "",
+                    "ipv6CidrBlockAssociationId": "",
+                    "mapPublicIpOnLaunch": true,
+                    "outpostArn": "",
+                    "ownerId": "125674537650",
+                    "tags": {},
+                    "vpcId": "vpc-e220fb8b"
+                },
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc::default-vpc",
+                "external": true,
+                "provider": "urn:pulumi:chishiki::Chishiki::pulumi:providers:aws::default_3_21_0::3fd3f231-9a31-4f3a-a32d-dc0200c6fcf3"
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$awsx:x:ec2:Subnet::default-vpc-public-0",
+                "custom": false,
+                "type": "awsx:x:ec2:Subnet",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc::default-vpc",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$awsx:x:ec2:Subnet::default-vpc-public-0",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$awsx:x:ec2:Subnet::default-vpc-e220fb8b-public-0"
+                ]
+            },
+            {
+                "urn": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$awsx:x:ec2:Subnet::default-vpc-public-1",
+                "custom": false,
+                "type": "awsx:x:ec2:Subnet",
+                "parent": "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc::default-vpc",
+                "aliases": [
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$awsx:x:ec2:Subnet::default-vpc-public-1",
+                    "urn:pulumi:chishiki::Chishiki::awsx:x:ec2:Vpc$awsx:x:ec2:Subnet::default-vpc-e220fb8b-public-1"
+                ]
+            }
+        ],
+        "pending_operations": [
+          
+        ]
+    }
+}

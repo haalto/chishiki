@@ -37,7 +37,7 @@ const serverService = new awsx.ecs.FargateService("server-service", {
         memory: 512,
         portMappings: [serverListener],
         environment: [
-          { name: "API_HOSTNAME", value: apiListener.endpoint.hostname },
+          { name: "API_URI", value: apiListener.endpoint.hostname },
         ],
       },
     },
