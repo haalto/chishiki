@@ -57,7 +57,7 @@ const clientService = new awsx.ecs.FargateService("client-service", {
         portMappings: [clientListener],
         environment: [
           {
-            name: "REACT_APP_SERVER_URI",
+            name: "SERVER_URI",
             value: serverListener.endpoint.hostname,
           },
         ],
