@@ -2,9 +2,6 @@ import * as awsx from "@pulumi/awsx";
 import { config } from "dotenv";
 config();
 
-console.log(process.env.PGUSER);
-console.log(process.env.PGHOST);
-
 const apiListener = new awsx.elasticloadbalancingv2.NetworkListener(
   "api-listener",
   { port: 4000 }

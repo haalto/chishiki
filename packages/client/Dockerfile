@@ -8,5 +8,15 @@ RUN yarn run build
 # production environment
 FROM nginx:stable-alpine
 COPY --from=builder /app/build /usr/share/nginx/html
+
+WORKDIR /usr/share/nginx/html
+COPY ./env.sh .
+
+# Add bash
+RUN apk add --no-cache bash
+
+# Make our shell script executable
+RUN chmod +x env.sh
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"] 
+CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]
