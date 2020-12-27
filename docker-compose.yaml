@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  client:
+    container_name: client
+    build:
+      context: ./packages/client
+      dockerfile: Dockerfile
+    environment:
+      - "SERVER_URI=localhost:5001"
+    ports:
+      - "80:80"
+  server:
+    container_name: server
+    build:
+      context: ./packages/server
+      dockerfile: Dockerfile
+    environment:
+      - API_URI=localhost:5002
+    ports:
+      - "5001:5001"
+  api:
+    container_name: api
+    build:
+      context: ./packages/api
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      - "PGUSER=${PGUSER}"
+      - "PGHOST=${PGHOST}"
+      - "PGPASSWORD=${PGPASSWORD}"
+      - "PGDATABASE=${PGDATABASE}"
+      - "PGPORT=${PGPORT}"
