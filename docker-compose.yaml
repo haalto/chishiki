@@ -16,7 +16,7 @@ services:
       context: ./packages/server
       dockerfile: Dockerfile
     environment:
-      - API_URI=localhost:5002
+      - API_URI=localhost:4000
     ports:
       - "5001:5001"
   api:
@@ -24,6 +24,8 @@ services:
     build:
       context: ./packages/api
       dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
     env_file: .env
     environment:
       - "PGUSER=${PGUSER}"

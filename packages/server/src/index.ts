@@ -19,6 +19,10 @@ const io: Server = ioserver(server, {
 const PORT = 5001;
 server.listen(PORT, () => console.log(`Server is running on port: ${PORT}.`));
 
+app.get("/health", (_, res) => {
+  res.end("OK");
+});
+
 const rooms: GameRoom[] = [];
 
 io.on("connection", (socket: SocketWithProps) => {
@@ -98,8 +102,17 @@ io.on("connection", (socket: SocketWithProps) => {
 
       //Main game loop
       while (round < rounds) {
-        const response = await fetch(`http://${config.API_URI}:4000/questions`);
-        const question = await response.json();
+        let question;
+
+        try {
+          const response = await fetch(
+            `http://${config.API_URI}:4000/questions`
+          );
+          question = await response.json();
+        } catch (e) {
+          console.log(e);
+        }
+
         room.gameState.currentQuestion = question[0];
         room.setState("QUESTION");
         io.to(socket.roomCode).emit("game-state-update", room.getGameState());
