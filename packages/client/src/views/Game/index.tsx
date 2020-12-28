@@ -15,6 +15,7 @@ import Answer from "./Answer";
 import TimerBar from "./TimerBar";
 import useSound from "use-sound";
 import theme from "./sounds/theme.mp3";
+import gameMusic from "./sounds/game.mp3";
 
 const initialGameState: GameState = {
   players: [],
@@ -28,6 +29,7 @@ const Game: React.FC = () => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [playTheme, themeData] = useSound(theme);
+  const [playGameMusic, gameMusicData] = useSound(gameMusic);
   const { goToLanding } = useNavigation();
   console.log(process.env);
   console.log(config.SERVER_URI);
@@ -43,10 +45,20 @@ const Game: React.FC = () => {
       playTheme();
     }
 
+    if (gameState.currentState === "STARTED" && !gameMusicData.isPlaying) {
+      playGameMusic();
+    }
+
     if (gameState.currentState !== "WAITING") {
       themeData.stop();
     }
-  }, [gameState.currentState, playTheme, themeData]);
+  }, [
+    gameMusicData.isPlaying,
+    gameState.currentState,
+    playGameMusic,
+    playTheme,
+    themeData,
+  ]);
 
   useEffect(() => {
     socket.open();

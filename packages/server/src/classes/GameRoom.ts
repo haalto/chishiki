@@ -65,28 +65,29 @@ export class GameRoom {
     this.gameState.scores = [];
     const players = this.sockets.map((s) => s.playerData);
 
+    console.log(players);
+
     for (const player of players) {
       if (player.answer && player.answerTime) {
         const answerIndex = this?.gameState?.currentQuestion?.answers.indexOf(
           player.answer
         );
 
-        console.log(this.questionStartTime);
-        console.log(player.answerTime);
-
         if (
           answerIndex === this.gameState.currentQuestion?.answer &&
           this.questionStartTime
         ) {
-          player.score += (this.questionStartTime - player.answerTime) * -1;
+          player.score +=
+            10000 - (this.questionStartTime - player.answerTime) * -1;
         }
       }
       this.gameState.scores.push({
         username: player.username,
         score: player.score,
       });
-      this.questionStartTime = null;
+      console.log(this.gameState.scores);
     }
+    this.questionStartTime = null;
   }
 
   private refreshGameState(): void {
