@@ -19,13 +19,14 @@ const Button = styled.button`
   cursor: pointer;
   color: white;
   font-size: 1.1rem;
-  border-radius: 20px;
+  border-radius: 5px;
   font-family: inherit;
   font-weight: 50;
 `;
 
 const ButtonJoin = styled(Button)`
-  width: 6rem;
+  width: 8rem;
+  height: 3rem;
   margin-top: 4rem;
   background: #f7971e; /* fallback for old browsers */
   background: -webkit-linear-gradient(
@@ -57,12 +58,14 @@ const Input = styled.input`
   margin-top: 2rem;
   margin-bottom: 0.3rem;
   font-family: inherit;
+  font-size: 1.5rem;
   background: none;
   border-top: none;
   border-left: none;
   border-right: none;
   border-bottom: 1px solid lightgrey;
   box-shadow: none;
+  text-align: center;
 
   ::placeholder {
     /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -81,6 +84,7 @@ const Input = styled.input`
 const Landing: React.FC = () => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+
   const { goToCreateNewGame, goToJoinGame } = useNavigation();
 
   const handleRoomCode = (value: string) => {

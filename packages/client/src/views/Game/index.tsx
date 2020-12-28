@@ -9,6 +9,12 @@ import {
   ResponseCreateRoom,
   ResponsePlayers,
 } from "../../types";
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import Answer from "./Answer";
+import TimerBar from "./TimerBar";
+import useSound from "use-sound";
+import theme from "./sounds/theme.mp3";
 
 const initialGameState: GameState = {
   players: [],
@@ -21,6 +27,7 @@ const initialGameState: GameState = {
 const Game: React.FC = () => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [gameState, setGameState] = useState<GameState>(initialGameState);
+  const [playTheme, themeData] = useSound(theme);
   const { goToLanding } = useNavigation();
   console.log(process.env);
   console.log(config.SERVER_URI);
@@ -30,6 +37,16 @@ const Game: React.FC = () => {
       autoConnect: false,
     })
   );
+
+  useEffect(() => {
+    if (gameState.currentState === "WAITING" && !themeData.isPlaying) {
+      playTheme();
+    }
+
+    if (gameState.currentState !== "WAITING") {
+      themeData.stop();
+    }
+  }, [gameState.currentState, playTheme, themeData]);
 
   useEffect(() => {
     socket.open();
@@ -49,6 +66,10 @@ const Game: React.FC = () => {
       setGameState(gameState);
     });
 
+    socket.on("error", (error: any) => {
+      toast(error);
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
@@ -58,32 +79,36 @@ const Game: React.FC = () => {
 
   const renderPlayers = (players: PlayerData[]) => {
     return players.map((p, i) => (
-      <div key={i}>
-        {p.username} Ready: {p.ready.toString()}
-      </div>
+      <Player key={i}>
+        {p.username} {p.ready && "👌"}
+      </Player>
     ));
   };
 
   const renderScores = (scores: PlayerScore[]) => {
     return scores.map((s) => (
-      <div>
-        {s.username}: {s.score}
-      </div>
+      <Player>
+        {s.username} {s.score}
+      </Player>
     ));
   };
 
   if (gameState.currentState === "WAITING") {
     return (
-      <div>
-        <span>Join the room using following code!</span>
-        <div>{roomCode}</div>
+      <Wrapper>
+        <Title>Join the room using following code!</Title>
+        <RoomCode>{roomCode}</RoomCode>
         {renderPlayers(gameState.players)}
-      </div>
+      </Wrapper>
     );
   }
 
   if (gameState.currentState === "STARTED") {
-    return <div>Game is starting!</div>;
+    return (
+      <Wrapper>
+        <Title>Game is about to start!</Title>
+      </Wrapper>
+    );
   }
 
   if (
@@ -91,38 +116,41 @@ const Game: React.FC = () => {
     gameState.currentQuestion?.question
   ) {
     return (
-      <>
-        <div>{gameState?.currentQuestion?.question}</div>
-        {gameState.currentQuestion.answers.map((a, i) => (
-          <div key={i}>{a}</div>
-        ))}
-      </>
+      <Wrapper>
+        <TimerBar duration={10} />
+        <Question>{gameState?.currentQuestion?.question}</Question>
+        <Questions>
+          {gameState.currentQuestion.answers.map((a, i) => (
+            <Answer key={i} answer={a} colorIndex={i} />
+          ))}
+        </Questions>
+      </Wrapper>
     );
   }
 
   if (gameState?.currentState === "ANSWER") {
     return (
-      <div>
-        <div>
+      <Wrapper>
+        <Title>
           {gameState.currentQuestion?.answers[gameState.currentQuestion.answer]}
-        </div>
+        </Title>
         <div>
           {gameState.answers.map((a) => (
-            <div>
-              {a.username}: {a.answer}
-            </div>
+            <PlayerAnswer>
+              {a.username} {a.answer ? a.answer : "🥶"}
+            </PlayerAnswer>
           ))}
         </div>
-      </div>
+      </Wrapper>
     );
   }
 
   if (gameState.currentState === "SCORE") {
     return (
-      <div>
-        <div>SCORES</div>
+      <Wrapper>
+        <Title>SCORES</Title>
         <div>{renderScores(gameState.scores)}</div>
-      </div>
+      </Wrapper>
     );
   }
 
@@ -135,3 +163,43 @@ const Game: React.FC = () => {
 };
 
 export default Game;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  min-height: 100%;
+  margin-top: 10rem;
+`;
+
+const RoomCode = styled.h1`
+  border-radius: 5px;
+  padding: 2rem;
+  color: black;
+  background: #f7971e; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to left,
+    #ffd200,
+    #f7971e
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #ffd200, #f7971e);
+`;
+
+const Title = styled.h1``;
+
+const Question = styled.h1`
+  margin-top: 3rem;
+`;
+
+const Questions = styled.div`
+  display: grid;
+  grid-template-columns: 200px 200px;
+  grid-row: auto auto;
+  grid-column-gap: 5rem;
+  grid-row-gap: 1rem;
+`;
+
+const Player = styled.h2``;
+
+const PlayerAnswer = styled.h2``;

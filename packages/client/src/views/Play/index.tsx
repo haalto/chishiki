@@ -4,20 +4,13 @@ import io from "socket.io-client";
 import useNavigation from "../../hooks/useNavigation";
 import { GameState } from "../../types";
 import { config } from "../../config";
+import styled from "styled-components";
+import AnswerButton from "./AnswerButton";
 
 interface ParamTypes {
   roomCode: string;
   username: string;
 }
-
-interface AnswerButtonProps {
-  answer: string;
-  sendAnswer: (answer: string) => void;
-}
-
-const AnswerButton: React.FC<AnswerButtonProps> = ({ answer, sendAnswer }) => {
-  return <button onClick={() => sendAnswer(answer)}>{answer}</button>;
-};
 
 const Play: React.FC = () => {
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -56,7 +49,12 @@ const Play: React.FC = () => {
 
   const renderAnswers = (answers: string[]) => {
     return answers.map((a, i) => (
-      <AnswerButton key={i} sendAnswer={sendAnswer} answer={a} />
+      <AnswerButton
+        key={i}
+        colorIndex={i as 0 | 1 | 2 | 3}
+        sendAnswer={sendAnswer}
+        answer={a}
+      />
     ));
   };
 
@@ -67,44 +65,53 @@ const Play: React.FC = () => {
 
   if (gameState?.currentState === "WAITING") {
     return (
-      <div>
-        <div>Hey, {username}</div>
-        <div>You are a player!</div>
-        <button onClick={() => updateRdy()}>
+      <Wrapper>
+        <Title>Hey, {username}</Title>
+        <ReadyButton onClick={() => updateRdy()}>
           {!ready ? "Ready" : "Not ready"}
-        </button>
-      </div>
+        </ReadyButton>
+      </Wrapper>
     );
   }
 
   if (gameState?.currentState === "STARTED") {
-    return <div>Game is about to start!</div>;
+    return (
+      <Wrapper>
+        <Title>Game is about to start!</Title>
+      </Wrapper>
+    );
   }
 
   if (gameState?.currentState === "QUESTION" && gameState.currentQuestion) {
     return (
-      <>
-        <div>{!answer && gameState?.currentQuestion?.question}</div>
-        <div>
-          {!answer
-            ? renderAnswers(gameState.currentQuestion.answers)
-            : "Wait for others"}
-        </div>
-      </>
+      <Wrapper>
+        <Question>{!answer && gameState?.currentQuestion?.question}</Question>
+        {!answer ? (
+          renderAnswers(gameState.currentQuestion.answers)
+        ) : (
+          <Title>Wait</Title>
+        )}
+      </Wrapper>
     );
   }
 
   if (gameState?.currentState === "ANSWER") {
     return (
-      <div>
-        Correct answer was:{" "}
-        {gameState.currentQuestion?.answers[gameState.currentQuestion.answer]}
-      </div>
+      <Wrapper>
+        <Title>Correct answer</Title>
+        <Answer>
+          {gameState.currentQuestion?.answers[gameState.currentQuestion.answer]}
+        </Answer>
+      </Wrapper>
     );
   }
 
   if (gameState?.currentState === "SCORE") {
-    return <div>SCORES</div>;
+    return (
+      <Wrapper>
+        <Title>SCORES</Title>
+      </Wrapper>
+    );
   }
 
   if (gameState?.currentState === "ENDED") {
@@ -112,7 +119,50 @@ const Play: React.FC = () => {
     goToLanding();
   }
 
-  return <div>Loading</div>;
+  return <Wrapper>Loading</Wrapper>;
 };
 
 export default Play;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  min-height: 100%;
+  margin-top: 5rem;
+`;
+
+const ReadyButton = styled.button`
+  padding: 0.5rem;
+  border: none;
+  margin-top: 4rem;
+  width: 10rem;
+  height: 3rem;
+  cursor: pointer;
+  color: white;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  font-family: inherit;
+  font-weight: 50;
+  background: #f7971e; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to left,
+    #ffd200,
+    #f7971e
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to left,
+    #ffd200,
+    #f7971e
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+`;
+
+const Question = styled.h3`
+  margin: 2rem;
+  text-align: center;
+`;
+
+const Title = styled.h3``;
+
+const Answer = styled.h2``;
