@@ -14,8 +14,8 @@ import styled from "styled-components";
 import Answer from "./Answer";
 import TimerBar from "./TimerBar";
 import useSound from "use-sound";
-import theme from "./sounds/theme.mp3";
-import gameMusic from "./sounds/game.mp3";
+import themeMusic from "./sounds/theme.mp3";
+import { getEmojiBasedOnScore } from "../../services/getEmojiBasedOnScore";
 
 const initialGameState: GameState = {
   players: [],
@@ -28,8 +28,7 @@ const initialGameState: GameState = {
 const Game: React.FC = () => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [gameState, setGameState] = useState<GameState>(initialGameState);
-  const [playTheme, themeData] = useSound(theme);
-  const [playGameMusic, gameMusicData] = useSound(gameMusic);
+  const [playTheme, themeData] = useSound(themeMusic);
   const { goToLanding } = useNavigation();
   console.log(process.env);
   console.log(config.SERVER_URI);
@@ -41,24 +40,10 @@ const Game: React.FC = () => {
   );
 
   useEffect(() => {
-    if (gameState.currentState === "WAITING" && !themeData.isPlaying) {
+    if (!themeData.isPlaying) {
       playTheme();
     }
-
-    if (gameState.currentState === "STARTED" && !gameMusicData.isPlaying) {
-      playGameMusic();
-    }
-
-    if (gameState.currentState !== "WAITING") {
-      themeData.stop();
-    }
-  }, [
-    gameMusicData.isPlaying,
-    gameState.currentState,
-    playGameMusic,
-    playTheme,
-    themeData,
-  ]);
+  }, [gameState.currentState, playTheme, themeData]);
 
   useEffect(() => {
     socket.open();
@@ -74,8 +59,7 @@ const Game: React.FC = () => {
     });
 
     socket.on("game-state-update", (gameState: GameState) => {
-      console.log(gameState);
-      setGameState(gameState);
+      setGameState(() => gameState);
     });
 
     socket.on("error", (error: any) => {
@@ -83,7 +67,7 @@ const Game: React.FC = () => {
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, []);
 
   useEffect(() => {
     console.log(gameState);
@@ -98,11 +82,13 @@ const Game: React.FC = () => {
   };
 
   const renderScores = (scores: PlayerScore[]) => {
-    return scores.map((s) => (
-      <Player>
-        {s.username} {s.score}
-      </Player>
-    ));
+    return scores
+      .sort((a, b) => (a.score < b.score ? 1 : -1))
+      .map((s) => (
+        <Player>
+          {s.username} {s.score} {getEmojiBasedOnScore(s.score)}
+        </Player>
+      ));
   };
 
   if (gameState.currentState === "WAITING") {
@@ -149,7 +135,15 @@ const Game: React.FC = () => {
         <div>
           {gameState.answers.map((a) => (
             <PlayerAnswer>
-              {a.username} {a.answer ? a.answer : "🥶"}
+              {a.username} {a.answer ? a.answer : "🥶"}{" "}
+              {a.answer
+                ? a.answer ===
+                  gameState.currentQuestion?.answers[
+                    gameState.currentQuestion.answer
+                  ]
+                  ? "👌"
+                  : "💩"
+                : ""}
             </PlayerAnswer>
           ))}
         </div>
@@ -167,6 +161,7 @@ const Game: React.FC = () => {
   }
 
   if (gameState.currentState === "ENDED") {
+    themeData.stop();
     socket.disconnect();
     goToLanding();
   }
@@ -186,16 +181,7 @@ const Wrapper = styled.div`
 `;
 
 const RoomCode = styled.h1`
-  border-radius: 5px;
-  padding: 2rem;
-  color: black;
-  background: #f7971e; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to left,
-    #ffd200,
-    #f7971e
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, #ffd200, #f7971e);
+  font-size: 3rem;
 `;
 
 const Title = styled.h1``;

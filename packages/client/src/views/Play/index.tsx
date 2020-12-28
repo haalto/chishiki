@@ -6,6 +6,7 @@ import { GameState } from "../../types";
 import { config } from "../../config";
 import styled from "styled-components";
 import AnswerButton from "./AnswerButton";
+import { getEmojiBasedOnScore } from "../../services/getEmojiBasedOnScore";
 
 interface ParamTypes {
   roomCode: string;
@@ -101,6 +102,14 @@ const Play: React.FC = () => {
         <Title>Correct answer</Title>
         <Answer>
           {gameState.currentQuestion?.answers[gameState.currentQuestion.answer]}
+          {gameState.answers.find((p) => p.username === username)?.answer ===
+          gameState.currentQuestion?.answers[
+            gameState.currentQuestion.answer
+          ] ? (
+            <Emoji>🥳</Emoji>
+          ) : (
+            <Emoji>😭</Emoji>
+          )}
         </Answer>
       </Wrapper>
     );
@@ -109,7 +118,15 @@ const Play: React.FC = () => {
   if (gameState?.currentState === "SCORE") {
     return (
       <Wrapper>
-        <Title>SCORES</Title>
+        <Title>SCORE</Title>
+        <Score>
+          {gameState.scores.find((p) => p.username === username)?.score}
+        </Score>
+        <Emoji>
+          {getEmojiBasedOnScore(
+            gameState.scores.find((p) => p.username === username)?.score
+          )}
+        </Emoji>
       </Wrapper>
     );
   }
@@ -159,10 +176,16 @@ const ReadyButton = styled.button`
 `;
 
 const Question = styled.h3`
-  margin: 2rem;
+  margin: 1rem;
   text-align: center;
 `;
 
-const Title = styled.h3``;
+const Title = styled.h2``;
 
 const Answer = styled.h2``;
+
+const Emoji = styled.div`
+  font-size: 5rem;
+`;
+
+const Score = styled.h1``;

@@ -88,7 +88,7 @@ const Landing: React.FC = () => {
   const { goToCreateNewGame, goToJoinGame } = useNavigation();
 
   const handleRoomCode = (value: string) => {
-    if (value.length < 6) {
+    if (value.length < 4) {
       setRoomCode(value.toUpperCase());
     }
   };
