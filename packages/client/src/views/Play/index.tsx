@@ -180,12 +180,22 @@ const Question = styled.h3`
   text-align: center;
 `;
 
-const Title = styled.h2``;
+const Title = styled.h2`
+  text-align: center;
+`;
 
-const Answer = styled.h2``;
+const Answer = styled.h2`
+  text-align: center;
+
+  div {
+    margin: 2rem;
+  }
+`;
 
 const Emoji = styled.div`
   font-size: 5rem;
 `;
 
-const Score = styled.h1``;
+const Score = styled.h1`
+  text-align: center;
+`;

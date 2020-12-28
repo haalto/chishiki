@@ -15,6 +15,7 @@ import Answer from "./Answer";
 import TimerBar from "./TimerBar";
 import useSound from "use-sound";
 import themeMusic from "./sounds/theme.mp3";
+import scoresMusic from "./sounds/scores.wav";
 import { getEmojiBasedOnScore } from "../../services/getEmojiBasedOnScore";
 
 const initialGameState: GameState = {
@@ -29,6 +30,7 @@ const Game: React.FC = () => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [playTheme, themeData] = useSound(themeMusic);
+  const [playScores] = useSound(scoresMusic);
   const { goToLanding } = useNavigation();
   console.log(process.env);
   console.log(config.SERVER_URI);
@@ -40,10 +42,22 @@ const Game: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!themeData.isPlaying) {
+    if (
+      !themeData.isPlaying &&
+      gameState.currentState !== "FINAL_SCORES" &&
+      gameState.currentState !== "ENDED"
+    ) {
       playTheme();
     }
-  }, [gameState.currentState, playTheme, themeData]);
+
+    if (themeData.isPlaying && gameState.currentState === "FINAL_SCORES") {
+      themeData.stop();
+    }
+
+    if (!themeData.isPlaying && gameState.currentState === "FINAL_SCORES") {
+      playScores();
+    }
+  }, [gameState.currentState, playScores, playTheme, themeData]);
 
   useEffect(() => {
     socket.open();
@@ -89,6 +103,30 @@ const Game: React.FC = () => {
           {s.username} {s.score} {getEmojiBasedOnScore(s.score)}
         </Player>
       ));
+  };
+
+  const renderFinalScores = (scores: PlayerScore[]) => {
+    return scores
+      .sort((a, b) => (a.score < b.score ? 1 : -1))
+      .map((s, i) => {
+        if (i === 0) {
+          return (
+            <Player>
+              <h1>
+                1. {s.username} {s.score} {"😎"}
+              </h1>
+            </Player>
+          );
+        } else {
+          return (
+            <Player>
+              <h3>
+                {s.username} {s.score} {getEmojiBasedOnScore(s.score)}
+              </h3>
+            </Player>
+          );
+        }
+      });
   };
 
   if (gameState.currentState === "WAITING") {
@@ -160,8 +198,16 @@ const Game: React.FC = () => {
     );
   }
 
+  if (gameState.currentState === "FINAL_SCORES") {
+    return (
+      <Wrapper>
+        <Title>WINNER IS</Title>
+        <div>{renderFinalScores(gameState.scores)}</div>
+      </Wrapper>
+    );
+  }
+
   if (gameState.currentState === "ENDED") {
-    themeData.stop();
     socket.disconnect();
     goToLanding();
   }

@@ -30,4 +30,5 @@ export const getEmojiBasedOnScore = (score: number | undefined) => {
   if (score < 30000) {
     return "😍";
   }
+  return "👹";
 };

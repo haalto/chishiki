@@ -97,7 +97,7 @@ io.on("connection", (socket: SocketWithProps) => {
       io.to(socket.roomCode).emit("game-state-update", room.getGameState());
       await wait(2000);
 
-      const rounds = 10;
+      const rounds = 6;
       let round = 0;
 
       //Main game loop
@@ -128,6 +128,10 @@ io.on("connection", (socket: SocketWithProps) => {
 
         round++;
       }
+      room.gameState.currentState = "FINAL_SCORES";
+      io.to(socket.roomCode).emit("game-state-update", room.getGameState());
+      await wait(5000);
+
       room.gameState.currentState = "ENDED";
       io.to(socket.roomCode).emit("game-state-update", room.getGameState());
     }

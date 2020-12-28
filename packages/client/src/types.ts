@@ -4,7 +4,8 @@ export type CurrentState =
   | "QUESTION"
   | "ANSWER"
   | "SCORE"
-  | "ENDED";
+  | "ENDED"
+  | "FINAL_SCORES";
 export type GameState = {
   currentState: CurrentState;
   answers: PlayerAnswer[];
