@@ -24,6 +24,7 @@ const apiService = new awsx.ecs.FargateService("api-service", {
       },
     },
   },
+  desiredCount: 1,
 });
 
 const serverListener = new awsx.elasticloadbalancingv2.NetworkListener(
@@ -44,6 +45,7 @@ const serverService = new awsx.ecs.FargateService("server-service", {
       },
     },
   },
+  desiredCount: 1,
 });
 
 const clientListener = new awsx.elasticloadbalancingv2.NetworkListener(
@@ -67,6 +69,7 @@ const clientService = new awsx.ecs.FargateService("client-service", {
       },
     },
   },
+  desiredCount: 1,
 });
 
 export let CLIENT = clientListener.endpoint.hostname;
