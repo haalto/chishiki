@@ -97,7 +97,7 @@ io.on("connection", (socket: SocketWithProps) => {
       io.to(socket.roomCode).emit("game-state-update", room.getGameState());
       await wait(2000);
 
-      const rounds = 6;
+      const rounds = 10;
       let round = 0;
 
       //Main game loop
